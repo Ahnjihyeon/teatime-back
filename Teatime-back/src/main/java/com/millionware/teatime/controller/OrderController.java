@@ -5,6 +5,11 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,27 +18,30 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.millionware.teatime.repository.OrderRepository;
+import com.millionware.teatime.service.OrderService;
 import com.millionware.teatime.vo.Order;
 
 
 @RestController
-@EnableAutoConfiguration
-@RequestMapping(value="/order")
+@RequestMapping("order")
 public class OrderController {
 	
 	@Autowired
-	OrderRepository orderRepository;
+	private OrderService orderService;
 	
-	@PostMapping("/")
-	public @ResponseBody List<Order> createOrder(@RequestBody Map<String,String> param){
-		String name = param.get("name");
-		String menu = param.get("menu");
-		//Order order = Order.builder().name(name).menu(menu).build();
-		//orderRepository.save(order);
-		
-		return orderRepository.findAll();
-		
+	@GetMapping
+	public ResponseEntity<List<Order>> getAllOrders(){
+		List<Order> orders = orderService.findAll();
+		return new ResponseEntity<List<Order>>(orders, HttpStatus.OK);
 	}
 	
+	@DeleteMapping(value="/{id}")
+	public ResponseEntity<Void> deleteOrder(@PathVariable("id") Long id){
+		orderService.deleteById(id);
+		return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
+	}
 	
+	public ResponseEntity<Order> save(@RequestBody Order order){
+		return new ResponseEntity<Order>(orderService.save(order), HttpStatus.OK);
+	}
 }
