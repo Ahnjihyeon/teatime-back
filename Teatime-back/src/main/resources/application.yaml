@@ -1,0 +1,13 @@
+spring:
+  data:    mongodb:
+        host: localhost
+        port: 27017
+        database: teatime
+  datasource:    username: 
+    password: 
+    url: jdbc:mysql://localhost:27017/teatime?useSSL=false
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  
+    
+        
+        
